@@ -1,57 +1,67 @@
+const { PrismaClient } = require('@prisma/client');
 var express = require('express');
 var router = express.Router();
-const mysql = require('mysql');
 
-// ساخت اتصال با MySQL
-const connection = mysql.createConnection({
-  host: '185.10.75.21', // آدرس هاست MySQL
-  port: 3306, // آدرس پورت
-  user: 'Tt911957349', // نام کاربری MySQL
-  password: 'Tt911957349', // رمز عبور MySQL
-  database: 'Chat' // نام دیتابیس
-});
-
-// // برقراری اتصال
-// connection.connect((error) => {
-//   if (error) {
-//     console.error('خطا در برقراری اتصال به MySQL: ' + error.stack);
-//     return;
-//   }
-//   console.log('اتصال به MySQL با موفقیت برقرار شد.');
-// });
-
-// // انجام کوئری
-// connection.query('SELECT * FROM table_name', (error, results) => {
-//   if (error) {
-//     console.error('خطا در اجرای کوئری: ' + error.stack);
-//     return;
-//   }
-//   console.log('نتایج کوئری:', results);
-// });
-
-// // قطع اتصال
-// connection.end((error) =>{
-//   if (error) {
-//     console.error('خطا در قطع اتصال از MySQL: ' + error.stack);
-//     return;
-//   }
-//   console.log('اتصال با MySQL قطع شد.');
-// });
-
+const prismaC = new PrismaClient();
 /* GET home page. */
-router.get('/app', async function (req, res, next) {
-  await connection.connect((error) => {
-    if (error) {
-      console.error('خطا در برقراری اتصال به MySQL: ' + error.stack);
-      return;
-    }
-    console.log('اتصال به MySQL با موفقیت برقرار شد.');
-  })
+router.post('/Text', async function (req, res, next) {
+  const body = await req.body;
+  try {
+    const creator = await prismaC.texts.create({ data: { Time: new Date(), ReciveId: body.ReciveId, SendId: body.yourId, Text: body.text, GroupId: body.GroupId } })
+    res.send({ success: true, data: [creator, "h"] });
+  } catch (error) {
+    res.send({ success: false, error: [error, req.body] })
+  }
+});
+router.get('/TextAll', async function (req, res, next) {
+  try {
+    const id = await req.body.id;
+    const data = await prismaC.texts.findMany()
+    res.send({ success: true, data: data });
+  } catch (error) {
+    res.send({ success: false, error: [error, req.body] })
+  }
+});
+router.get('/Text', async function (req, res, next) {
+  try {
+    const { GroupId, yourId } = await req.body;
+    const data = await prismaC.texts.findMany({ where: { GroupId: GroupId } });
+    res.send({ success: true, data: data });
+  } catch (error) {
+    res.send({ success: false, error: [error, req.body] })
+  }
+});
 
-  res.render('index', { title: 'Express' });
+
+
+router.post('/Chat', async function (req, res, next) {
+
+  try {
+    const { yourId, RevicedId } = await req.body;
+    const creator = await prismaC.group.create({ data: { Peaple1: yourId, Peaple2: RevicedId } })
+    res.send({ success: true, data: [creator, "h"] });
+  } catch (error) {
+    res.send({ success: false, error: [error, req.body] })
+  }
 });
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/ChatAll', async function (req, res, next) {
+  try {
+    const data = await prismaC.group.findMany()
+    res.send({ success: true, data: data });
+  } catch (error) {
+    res.send({ success: false, error: [error, req.body] })
+  }
 });
+router.get('/Chat', async function (req, res, next) {
+  try {
+    const { yourId } = await req.body;
+    let data = await prismaC.group.findMany();
+   data= data.filter(el => el.Peaple2 == yourId || el.Peaple1 == yourId)
+    res.send({ success: true, data: data });
+  } catch (error) {
+    res.send({ success: false, error: [error, req.body] })
+  }
+});
+
 
 module.exports = router;

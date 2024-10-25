@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://Taha:Tt9119573449@localhost:3306/Chat"
+}
+
+model Texts {
+  Id       Int @id  @default(autoincrement())
+  Text     String   @db.VarChar(50)
+  Time     DateTime @db.Date
+  ReciveId Int
+  SendId   Int
+  GroupId Int
+}
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+model Group {
+  id    Int     @id @default(autoincrement())
+  Peaple1 Int  @unique
+  Peaple2  Int @unique
+}
