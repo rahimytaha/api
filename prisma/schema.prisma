@@ -3,25 +3,39 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = "mysql://Taha:Tt9119573449@localhost:3306/Chat"
+  provider = "mongodb"
+  url      = "mongodb+srv://rahimytaha9:Tt9119573449@cluster0.7pfw7.mongodb.net/database?retryWrites=true&w=majority&appName=Cluster0"
+}
+
+model Group {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  Peaple1 Int    @unique
+  Peaple2 Int?    @unique  @default(0)
+}
+
+model Post {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 }
 
 model Texts {
-  Id       Int @id  @default(autoincrement())
-  Text     String   @db.VarChar(50)
-  Time     DateTime @db.Date
-  ReciveId Int
-  SendId   Int
-  GroupId Int
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  GroupId  String
+  ReciveId Int? @default(0)
+  SenderId Int
+  text     String
+  time     DateTime @db.Date
 }
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  /// Field referred in an index, but found no data to define the type.
+  email Json?  @unique
 }
-model Group {
-  id    Int     @id @default(autoincrement())
-  Peaple1 Int  @unique
-  Peaple2  Int @unique
+
+model database {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  GroupId  String
+  ReciveId Int
+  SenderId Int
+  text     String
+  time     DateTime @db.Date
 }
