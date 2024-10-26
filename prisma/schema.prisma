@@ -9,8 +9,9 @@ datasource db {
 
 model Group {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
-  Peaple1 Int    @unique
-  Peaple2 Int?    @unique  @default(0)
+  Peaple1 Int   
+  Peaple2 Int?     @default(0)
+  Ishelp Boolean? @default(false)
 }
 
 model Post {

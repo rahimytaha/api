@@ -2,11 +2,11 @@ const { PrismaClient } = require('@prisma/client');
 const { default: axios } = require('axios');
 var express = require('express');
 var router = express.Router();
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
+// const swaggerUi = require('swagger-ui-express');
+// const swaggerDocument = require('./swagger.json');
 
-router.use('/api-docs', swaggerUi.serve);
-router.get('/api-docs', swaggerUi.setup(swaggerDocument));
+// router.use('/api-docs', swaggerUi.serve);
+// router.get('/api-docs', swaggerUi.setup(swaggerDocument));
 const prismaC = new PrismaClient();
 /* GET home page. */
 router.post('/Text', async function (req, res, next) {
